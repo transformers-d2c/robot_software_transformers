@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'central_node = ros_transformers_pkg.central_node:main',
+            'camera_node =  ros_transformers_pkg.camera_node:main'
         ],
     },
 )
