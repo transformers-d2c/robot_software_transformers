@@ -36,8 +36,10 @@ class CentralNode(Node):
             self.publisher.publish(Pose2D(pose_X, pose_Y, pose_theta))
     
 def main():
+    #TODO: add argparse to py run command
     n_camera = int(sys.argv[1])
     robot_id = int(sys.argv[2])
+    print(n_camera, robot_id)
     rclpy.init()
     central_node = CentralNode(n_camera, robot_id)
     rclpy.spin(central_node)
