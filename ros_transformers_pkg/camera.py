@@ -172,6 +172,7 @@ class Camera:
     def load_map(self,filename):
         with open(filename,'rb') as inp:
             data = pickle.load(inp)
+            print(data)
             self.map = aruco.GridBoard_create(data[0],data[1],data[2],data[3],Camera._charuco_dict())
 
     def _create_charuco_board(self, chess_square_length=1, marker_square_length=0.7):
@@ -282,7 +283,7 @@ class Camera:
         relative_robot_pose_final = []
 
         for pose in relative_robot_pose:
-            relative_robot_pose_final.append((rvectvec_to_euler(pose[0],pose[1]),pose[1]))        
+            relative_robot_pose_final.append((rvectvec_to_euler(pose[0],pose[1]),pose[1]))
 
         return relative_robot_pose_final, robot_ids
 

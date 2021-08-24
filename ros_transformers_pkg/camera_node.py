@@ -2,22 +2,23 @@ import rclpy
 from rclpy.node import Node
 
 from geometry_msgs.msg import Pose2D
+import sys
 
 
+from .camera import Camera 
 class CameraNode(Node):
 
-    def __init__(self, camera_url, calib_file, map_file):
-        super().__init__('minimal_publisher')
-
-        self.camera = camera.Camera(camera_url)
+    def __init__(self, camera_url, calib_file, map_file, cameraID):
+        super().__init__('camera_node')
+        self.cameraID = cameraID
+        self.camera = Camera(camera_url)
         self.camera._load(calib_file)
         self.camera.load_map(map_file)
-
+        self.pubs = []
         self.camera.video.start()
-
-        self.publishers= []
+        
         for i in range(4):
-            self.publishers.append(self.create_publisher(Pose2D, "r_"+ str(i+1), 1))
+            self.pubs.append(self.create_publisher(Pose2D,"c_"+str(self.cameraID) +"/r_"+ str(i+1), 1))
 
 
         timer_period = 0.03
@@ -27,28 +28,22 @@ class CameraNode(Node):
     def timer_callback(self):
 
 
-        poses,ids = self.camera.cord_rel_to_marker(self.camera.get_frame())
+        poses,ids = self.camera.cord_rel_to_marker(self.camera.get_frame(),63.96)
         msg= Pose2D()
-
         for pose,id in zip(poses,ids):
             id=id-201
-            msg.x=pose[1][0]
-            msg.y= pose[1][1]
-            msg.theta= pose[0][2]
+            msg.x=pose[1][0][0]
+            msg.y= pose[1][1][0]
+            msg.theta= pose[0][2][0]
+            self.pubs[id[0]].publish(msg)
 
-            self.publishers[id].publish(msg)
-
-def main(args=None):
+def main():
     # will have to initialize the camera library ?
     # Initialize the rclpy library
-
-    rclpy.init(args=args)
-    camera_node = CameraNode()
+    print(sys.argv)
+    rclpy.init()
+    camera_node = CameraNode(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     rclpy.spin(camera_node)
-
-    camera_node.destroy_node()
-
-
     rclpy.shutdown()  # Shutdown the ROS client library for Python
 
 if __name__ == '__main__':
@@ -57,25 +52,3 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
-
-
-def main(args=None):
-    rclpy.init(args=args)
-
-    minimal_publisher = MinimalPublisher()
-
-    rclpy.spin(minimal_publisher)
-
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    minimal_publisher.destroy_node()
-    rclpy.shutdown()
-
-
-if __name__ == '__main__':
-    main()
