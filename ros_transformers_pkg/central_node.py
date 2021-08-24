@@ -1,23 +1,23 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose2D
-
+import sys
 
 class CentralNode(Node):
 
-    def __init__(self, nCamera, RobotID):
+    def __init__(self, n_camera, robot_id):
         super().__init__('central_node')
-        self.publisher = self.create_publisher(Pose2D, 'r_'+str(RobotID), 1)
+        self.publisher = self.create_publisher(Pose2D, 'r_'+str(robot_id), 1)
         time_period = 1/30
         self.timer = self.create_timer(time_period, self.pub_callback)
-        self.nCamera = nCamera
-        self.RobotID = RobotID
+        self.n_camera = n_camera
+        self.robot_id = robot_id
         self.subs = []
-        for i in range(nCamera):
-            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(RobotID), self.subsCallback, 1))
+        for i in range(n_camera):
+            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1))
         self.camera_pose = []
     
-    def subsCallback(self, msg):
+    def subs_callback(self, msg):
         self.camera_pose.append(msg)
 
     def pub_callback(self):
@@ -36,8 +36,10 @@ class CentralNode(Node):
             self.publisher.publish(Pose2D(pose_X, pose_Y, pose_theta))
     
 def main():
+    n_camera = int(sys.argv[1])
+    robot_id = int(sys.argv[2])
     rclpy.init()
-    central_node = CentralNode(3, 1)
+    central_node = CentralNode(n_camera, robot_id)
     rclpy.spin(central_node)
     rclpy.shutdown()
 
