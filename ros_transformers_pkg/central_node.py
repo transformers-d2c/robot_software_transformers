@@ -35,8 +35,13 @@ class CentralNode(Node):
             self.camera_pose = []
             self.publisher.publish(Pose2D(pose_X, pose_Y, pose_theta))
     
+    def send_to_node():
+        """
+        Store the data in DS and return it to be used for socket_handler.py
+        """
+        pass
+    
 def main():
-    #TODO: add argparse to py run command
     n_camera = int(sys.argv[1])
     robot_id = int(sys.argv[2])
     print(n_camera, robot_id)
