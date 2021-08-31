@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'ros_transformers_pkg'
+package_name = 'robot_software_transformers'
 
 setup(
     name=package_name,
@@ -20,8 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'central_node = ros_transformers_pkg.central_node:main',
-            'camera_node =  ros_transformers_pkg.camera_node:main'
+            'central_node = robot_software_transformers.central_node:main',
+            'camera_node =  robot_software_transformers.camera_node:main'
         ],
     },
 )
