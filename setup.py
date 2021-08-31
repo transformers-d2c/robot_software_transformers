@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'central_node = robot_software_transformers.central_node:main',
-            'camera_node =  robot_software_transformers.camera_node:main'
+            'camera_node =  robot_software_transformers.camera_node:main',
+            'socket_node =  robot_software_transformers.socket_node:main',
         ],
     },
 )
