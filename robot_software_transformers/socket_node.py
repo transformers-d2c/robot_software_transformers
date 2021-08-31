@@ -38,7 +38,7 @@ class SocketNode(Node):
             },
             'flip':self.flip.data
         }
-        message = json.dumps(dict,ensure_ascii=True)
+        message = json.dumps(dict,ensure_ascii=True) + '|'
         self.robot_socket.sendall(message.encode('ascii'))
 
     def pose_callback(self,msg):
