@@ -32,12 +32,13 @@ class PathNode(Node):
         #Example path: [{'r_1':Pose2D(0,0,0),'r_2':Pose2D(0,0,0)},{'r_1':Pose2D(0,0,90),'r_2':Pose2D(0,0,0)}] 
         
     def timer_callback(self):
-        if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']) and pose_equal(self.pose['r_2'],self.path[self.step]['r_2']) and pose_equal(self.pose['r_3'],self.path[self.step]['r_3']) and pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
-            self.step += 1
         self.pub_r_1.publish(self.path[self.step]['r_1'])
         self.pub_r_2.publish(self.path[self.step]['r_2'])
         self.pub_r_3.publish(self.path[self.step]['r_3'])
         self.pub_r_4.publish(self.path[self.step]['r_4'])
+        if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']) and pose_equal(self.pose['r_2'],self.path[self.step]['r_2']) and pose_equal(self.pose['r_3'],self.path[self.step]['r_3']) and pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
+            self.step += 1
+        
 
     def r_1_pose_callback(self, msg):
         self.pose['r_1'] = msg
