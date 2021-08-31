@@ -2,19 +2,21 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose2D
 import sys
-
+from rclpy.executors import MultiThreadedExecutor
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 class CentralNode(Node):
 
     def __init__(self, n_camera, robot_id):
-        super().__init__('central_node')
-        self.publisher = self.create_publisher(Pose2D, 'r_'+str(robot_id), 1)
+        super().__init__('r_'+str(robot_id))
+        self.group = MutuallyExclusiveCallbackGroup()
+        self.publisher = self.create_publisher(Pose2D, 'r_'+str(robot_id)+'/pose', 1)
         time_period = 1/30
-        self.timer = self.create_timer(time_period, self.pub_callback)
+        self.timer = self.create_timer(time_period, self.pub_callback, callback_group=self.group)
         self.n_camera = n_camera
         self.robot_id = robot_id
         self.subs = []
         for i in range(n_camera):
-            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1))
+            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1, callback_group=self.group))
         self.camera_pose = []
     
     def subs_callback(self, msg):
@@ -35,20 +37,27 @@ class CentralNode(Node):
             self.camera_pose = []
             self.publisher.publish(Pose2D(pose_X, pose_Y, pose_theta))
     
-    def send_to_node():
-        """
-        Store the data in DS and return it to be used for socket_handler.py
-        """
-        pass
-    
 def main():
     n_camera = int(sys.argv[1])
-    robot_id = int(sys.argv[2])
-    print(n_camera, robot_id)
+    n_robots = int(sys.argv[2])
+    print(n_camera, n_robots)
     rclpy.init()
-    central_node = CentralNode(n_camera, robot_id)
-    rclpy.spin(central_node)
-    rclpy.shutdown()
+    nodes = []
+    try:
+        executor = MultiThreadedExecutor(4)
+        for i in range(n_robots):
+            cnode = CentralNode(n_camera, i+1)
+            nodes.append(cnode)
+            executor.add_node(cnode)
+        try:
+            executor.spin()
+        finally:
+            executor.shutdown()
+            for i in range(n_robots):
+                nodes[i].destroy_node()
+    finally:
+        rclpy.shutdown()
+    
 
 if __name__ == '__main__':
     main()
