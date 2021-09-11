@@ -23,6 +23,7 @@ setup(
             'central_node = robot_software_transformers.central_node:main',
             'camera_node =  robot_software_transformers.camera_node:main',
             'socket_node =  robot_software_transformers.socket_node:main',
+            'path_node =  robot_software_transformers.path_node:main',
         ],
     },
 )
