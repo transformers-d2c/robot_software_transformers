@@ -284,6 +284,7 @@ class Camera:
 
         for pose in relative_robot_pose:
             relative_robot_pose_final.append((rvectvec_to_euler(pose[0],pose[1]),pose[1]))
+        
 
         return relative_robot_pose_final, robot_ids
 

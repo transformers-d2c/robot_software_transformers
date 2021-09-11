@@ -14,7 +14,7 @@ def pose_equal(p1,p2):
 
 class PathNode(Node):
     def __init__(self):
-        # super().__init__('r_'+str(robot_id))
+        super().__init__('path_node')
         time_period = 1/30
         self.time = self.create_timer(time_period, self.timer_callback)
         self.pose_sub = []
@@ -26,9 +26,17 @@ class PathNode(Node):
         self.pub_r_2 = self.create_publisher(Pose2D, 'r_2/target', 1)
         self.pub_r_3 = self.create_publisher(Pose2D, 'r_3/target', 1)
         self.pub_r_4 = self.create_publisher(Pose2D, 'r_4/target', 1)
-        self.pose = dict()
         self.step = 0
         self.path = [] 
+        t = Pose2D()
+        t.x = 30.0
+        t.y = 30.0
+        t.theta = 150.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t.x = 12.0
+        self.pose = {'r_1':t,'r_2':t,'r_3':t,'r_4':t}
+
+
         #Example path: [{'r_1':Pose2D(0,0,0),'r_2':Pose2D(0,0,0)},{'r_1':Pose2D(0,0,90),'r_2':Pose2D(0,0,0)}] 
         
     def timer_callback(self):

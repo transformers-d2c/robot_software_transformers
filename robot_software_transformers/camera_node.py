@@ -28,15 +28,16 @@ class CameraNode(Node):
     def timer_callback(self):
 
 
-        poses,ids = self.camera.cord_rel_to_marker(self.camera.get_frame(),63.96)
+        poses,ids = self.camera.cord_rel_to_marker(self.camera.get_frame(),11.8)
         msg= Pose2D()
         for pose,id in zip(poses,ids):
             id=id-201
             msg.x=pose[1][0][0]
             msg.y= pose[1][1][0]
             msg.theta= pose[0][2][0]
-            self.pubs[id[0]].publish(msg)
-
+            if id[0]<4:
+                self.pubs[id[0]].publish(msg)
+        
 def main():
     # will have to initialize the camera library ?
     # Initialize the rclpy library
