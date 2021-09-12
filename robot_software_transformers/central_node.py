@@ -18,6 +18,7 @@ class CentralNode(Node):
         for i in range(n_camera):
             self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1, callback_group=self.group))
         self.camera_pose = []
+        self.check = [1,1,1]
     
     def subs_callback(self, msg):
         self.camera_pose.append(msg)
@@ -26,19 +27,21 @@ class CentralNode(Node):
         pose_X = 0
         pose_Y = 0
         pose_theta = 0
-        check = [1, 1, 1]
+        pose_holder = Pose2D()
+        cnt = 0
         if len(self.camera_pose) > 0:
             for pose in self.camera_pose:
-                if abs(check[0] - pose.x) < 0.5 and abs(check[1] - pose.y) < 0.5 and abs(check[2] - pose.theta) < 0.5:
+                if abs(self.check[0] - pose.x) < 0.5 and abs(self.check[1] - pose.y) < 0.5 and abs(self.check[2] - pose.theta) < 0.5:
                     pose_X += pose.x
                     pose_Y += pose.y
                     pose_theta += pose.theta
-            pose_X = pose_X/len(self.camera_pose)
-            pose_Y = pose_Y/len(self.camera_pose)
-            pose_theta = pose_theta/len(self.camera_pose)
+                    cnt = cnt + 1
+            pose_holder.x = pose_X/cnt
+            pose_holder.y = pose_Y/cnt
+            pose_holder.theta = pose_theta/cnt
             self.camera_pose = []
-            self.publisher.publish(Pose2D(pose_X, pose_Y, pose_theta))
-        check = [pose_X, pose_Y, pose_theta]
+            self.publisher.publish(pose_holder)
+            self.check = [pose_X, pose_Y, pose_theta]
     
 def main():
     n_camera = int(sys.argv[1])
