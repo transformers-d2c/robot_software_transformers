@@ -8,7 +8,7 @@ from geometry_msgs.msg import Pose2D
 def pose_equal(p1,p2):
     isEqual = (abs(p1.theta-p2.theta)<5)
     distance = ((p1.x-p2.x)**2 + (p1.y-p2.y)**2)**0.5
-    isEqual = isEqual and (distance<5)
+    isEqual = isEqual and (distance<15)
     return isEqual
 
 
@@ -29,9 +29,14 @@ class PathNode(Node):
         self.step = 0
         self.path = [] 
         t = Pose2D()
-        t.x = 30.0
-        t.y = 30.0
-        t.theta = 150.0
+        t.x = 185.0
+        t.y = 147.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 185.0
+        t.y = 147.0
+        t.theta = 0.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 12.0
@@ -48,7 +53,9 @@ class PathNode(Node):
             self.pub_r_2.publish(self.path[self.step]['r_2'])
             self.pub_r_3.publish(self.path[self.step]['r_3'])
             self.pub_r_4.publish(self.path[self.step]['r_4'])
-            if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']) and pose_equal(self.pose['r_2'],self.path[self.step]['r_2']) and pose_equal(self.pose['r_3'],self.path[self.step]['r_3']) and pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
+            # if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']) and pose_equal(self.pose['r_2'],self.path[self.step]['r_2']) and pose_equal(self.pose['r_3'],self.path[self.step]['r_3']) and pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
+            #     self.step += 1
+            if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
                 self.step += 1
         
 

@@ -57,10 +57,10 @@ class CentralNode(Node):
                 pose_holder.theta = pose_holder.theta/cnt
                 self.old_pose = Pose2D()
                 self.old_pose.x = pose_holder.x
-                self.old_pose.x = pose_holder.x
-                self.old_pose.x = pose_holder.theta
+                self.old_pose.y = pose_holder.y
+                self.old_pose.theta = pose_holder.theta
+                self.publisher.publish(pose_holder)
             self.camera_pose = []
-            self.publisher.publish(pose_holder)
     
 def main():
     n_camera = int(sys.argv[1])
