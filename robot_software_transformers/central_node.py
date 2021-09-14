@@ -4,6 +4,14 @@ from geometry_msgs.msg import Pose2D
 import sys
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
+
+
+
+def pose_tolerance(p1,p2):
+    isEqual = (abs(p1.theta-p2.theta)<30)
+    distance = ((p1.x-p2.x)**2 + (p1.y-p2.y)**2)**0.5
+    isEqual = isEqual and (distance<30)
+    return isEqual
 class CentralNode(Node):
 
     def __init__(self, n_camera, robot_id):
@@ -18,30 +26,41 @@ class CentralNode(Node):
         for i in range(n_camera):
             self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1, callback_group=self.group))
         self.camera_pose = []
-        self.check = [1,1,1]
+        self.old_pose = None
     
     def subs_callback(self, msg):
         self.camera_pose.append(msg)
 
     def pub_callback(self):
-        pose_X = 0
-        pose_Y = 0
-        pose_theta = 0
         pose_holder = Pose2D()
+        pose_holder.x = 0.0
+        pose_holder.y = 0.0
+        pose_holder.theta = 0.0
         cnt = 0
         if len(self.camera_pose) > 0:
-            for pose in self.camera_pose:
-                if abs(self.check[0] - pose.x) < 0.5 and abs(self.check[1] - pose.y) < 0.5 and abs(self.check[2] - pose.theta) < 0.5:
-                    pose_X += pose.x
-                    pose_Y += pose.y
-                    pose_theta += pose.theta
+            if self.old_pose is None:
+                for pose in self.camera_pose:
+                    pose_holder.x += pose.x
+                    pose_holder.y += pose.y
+                    pose_holder.theta += pose.theta
                     cnt = cnt + 1
-            pose_holder.x = pose_X/cnt
-            pose_holder.y = pose_Y/cnt
-            pose_holder.theta = pose_theta/cnt
+            else:
+                for pose in self.camera_pose:
+                    if pose_tolerance(pose,self.old_pose):
+                        pose_holder.x += pose.x
+                        pose_holder.y += pose.y
+                        pose_holder.theta += pose.theta
+                        cnt = cnt + 1
+            if cnt>0:
+                pose_holder.x = pose_holder.x/cnt
+                pose_holder.y = pose_holder.y/cnt
+                pose_holder.theta = pose_holder.theta/cnt
+                self.old_pose = Pose2D()
+                self.old_pose.x = pose_holder.x
+                self.old_pose.x = pose_holder.x
+                self.old_pose.x = pose_holder.theta
             self.camera_pose = []
             self.publisher.publish(pose_holder)
-            self.check = [pose_X, pose_Y, pose_theta]
     
 def main():
     n_camera = int(sys.argv[1])
