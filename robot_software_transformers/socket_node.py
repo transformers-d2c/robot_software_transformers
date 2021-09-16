@@ -4,7 +4,7 @@ from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Bool
 import sys
 from rclpy.executors import MultiThreadedExecutor
-from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup, ReentrantCallbackGroup
 import json
 import socket
 
@@ -12,7 +12,7 @@ class SocketNode(Node):
 
     def __init__(self,robot_id, robot_socket):
         super().__init__('socket_r_'+str(robot_id))
-        self.group = ReentrantCallbackGroup()
+        self.group = MutuallyExclusiveCallbackGroup()
         self.robot_socket = robot_socket
         self.timer = self.create_timer(1/30,self.timer_callback,self.group)
         self.pose_sub = self.create_subscription(Pose2D,'r_'+str(robot_id)+'/pose',self.pose_callback,1,callback_group=self.group)
