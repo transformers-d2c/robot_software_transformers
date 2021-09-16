@@ -16,12 +16,15 @@ RUN rosdep update
 RUN rosdep install --from-paths /ros2_foxy/ros2-linux/share --ignore-src --rosdistro foxy -y --skip-keys "console_bridge fastcdr fastrtps osrf_testing_tools_cpp poco_vendor rmw_connextdds rti-connext-dds-5.3.1 tinyxml_vendor tinyxml2_vendor urdfdom urdfdom_headers"
 RUN apt install -y libpython3-dev python3-pip
 RUN pip3 install -U argcomplete
+RUN apt update
+RUN apt install python3-colcon-common-extensions -y
 WORKDIR /robot_software_transformers-main
-RUN mkdir src
-RUN cp package.xml src/
-RUN cp -r resource src/
-RUN cp -r robot_software_transformers src/
-RUN cp setup.cfg src/
-RUN cp setup.py src/
-RUN cp -r test src/
+RUN mkdir ../src
+RUN mv package.xml ../src/package.xml
+RUN mv resource ../src/resource
+RUN mv robot_software_transformers ../src/robot_software_transformers
+RUN mv setup.cfg ../src/setup.cfg
+RUN mv setup.py ../src/setup.py
+RUN mv test ../src/test
+RUN mv /src /robot_software_transformers-main
 ENTRYPOINT /bin/bash
