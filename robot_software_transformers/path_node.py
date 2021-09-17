@@ -9,7 +9,7 @@ def pose_equal(p1,p2):
     isEqual = (abs(p1.theta-p2.theta)<5)
     distance = ((p1.x-p2.x)**2 + (p1.y-p2.y)**2)**0.5
     isEqual = isEqual and (distance<15)
-    return isEqual
+    return distance<15
 
 
 class PathNode(Node):
@@ -30,14 +30,34 @@ class PathNode(Node):
         self.path = [] 
         t = Pose2D()
         t.x = 185.0
-        t.y = 147.0
+        t.y = 150.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 185.0
-        t.y = 147.0
-        t.theta = 0.0
+        t.y = 115.0
+        t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 185.0
+        t.y = 95.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 185.0
+        t.y = 55.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 185.0
+        t.y = 15.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        # t = Pose2D()
+        # t.x = 135.0
+        # t.y = 147.0
+        # t.theta = 180.0
+        # self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 12.0
         t.y = 30.0

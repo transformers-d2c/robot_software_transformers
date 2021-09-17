@@ -4,13 +4,13 @@ from geometry_msgs.msg import Pose2D
 import sys
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
-
+from statistics import mode
 
 
 def pose_tolerance(p1,p2):
-    isEqual = (abs(p1.theta-p2.theta)<30)
+    isEqual = (abs(p1.theta-p2.theta)<30000)
     distance = ((p1.x-p2.x)**2 + (p1.y-p2.y)**2)**0.5
-    isEqual = isEqual and (distance<30)
+    isEqual = isEqual and (distance<5000000)
     return isEqual
 class CentralNode(Node):
 
@@ -27,6 +27,9 @@ class CentralNode(Node):
             self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1, callback_group=self.group))
         self.camera_pose = []
         self.old_pose = None
+        self.old_poses_x = []
+        self.old_poses_y = []
+        self.old_poses_theta = []
     
     def subs_callback(self, msg):
         self.camera_pose.append(msg)
@@ -55,10 +58,23 @@ class CentralNode(Node):
                 pose_holder.x = pose_holder.x/cnt
                 pose_holder.y = pose_holder.y/cnt
                 pose_holder.theta = pose_holder.theta/cnt
+                pose_holder.x = (pose_holder.x//5)*5
+                pose_holder.y = (pose_holder.y//5)*5
+                pose_holder.theta = (pose_holder.theta//5)*5
                 self.old_pose = Pose2D()
                 self.old_pose.x = pose_holder.x
                 self.old_pose.y = pose_holder.y
                 self.old_pose.theta = pose_holder.theta
+                self.old_poses_x.append(pose_holder.x)
+                self.old_poses_y.append(pose_holder.y)
+                self.old_poses_theta.append(pose_holder.theta)
+                self.old_poses_x = self.old_poses_x[max(-1*len(self.old_poses_x),-5):]
+                self.old_poses_y = self.old_poses_y[max(-1*len(self.old_poses_y),-5):]
+                self.old_poses_theta = self.old_poses_theta[max(-1*len(self.old_poses_theta),-5):]
+                pose_holder = Pose2D()
+                pose_holder.x = mode(self.old_poses_x)
+                pose_holder.y = mode(self.old_poses_y)
+                pose_holder.theta = mode(self.old_poses_theta)
                 self.publisher.publish(pose_holder)
             self.camera_pose = []
     
