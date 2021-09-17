@@ -9,7 +9,7 @@ from .camera import Camera
 class CameraNode(Node):
 
     def __init__(self, camera_url, calib_file, map_file, cameraID):
-        super().__init__('camera_node')
+        super().__init__('c_'+str(cameraID))
         self.cameraID = cameraID
         self.camera = Camera(camera_url)
         self.camera._load(calib_file)
