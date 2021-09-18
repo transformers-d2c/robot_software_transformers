@@ -50,7 +50,22 @@ class PathNode(Node):
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 185.0
-        t.y = 15.0
+        t.y = 20.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 215.0
+        t.y = 20.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 260.0
+        t.y = 20.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 300.0
+        t.y = 20.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         # t = Pose2D()
@@ -68,11 +83,11 @@ class PathNode(Node):
         #Example path: [{'r_1':Pose2D(0,0,0),'r_2':Pose2D(0,0,0)},{'r_1':Pose2D(0,0,90),'r_2':Pose2D(0,0,0)}] 
         
     def timer_callback(self):
-        if self.step<len(self.path):
-            self.pub_r_1.publish(self.path[self.step]['r_1'])
-            self.pub_r_2.publish(self.path[self.step]['r_2'])
-            self.pub_r_3.publish(self.path[self.step]['r_3'])
-            self.pub_r_4.publish(self.path[self.step]['r_4'])
+        self.pub_r_1.publish(self.path[self.step]['r_1'])
+        self.pub_r_2.publish(self.path[self.step]['r_2'])
+        self.pub_r_3.publish(self.path[self.step]['r_3'])
+        self.pub_r_4.publish(self.path[self.step]['r_4'])
+        if self.step<len(self.path)-1:
             # if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']) and pose_equal(self.pose['r_2'],self.path[self.step]['r_2']) and pose_equal(self.pose['r_3'],self.path[self.step]['r_3']) and pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
             #     self.step += 1
             if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
