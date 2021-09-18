@@ -5,7 +5,7 @@ import sys
 from rclpy.executors import MultiThreadedExecutor
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 from statistics import mode
-
+import functools
 
 def pose_tolerance(p1,p2):
     isEqual = (abs(p1.theta-p2.theta)<30000)
@@ -23,16 +23,20 @@ class CentralNode(Node):
         self.n_camera = n_camera
         self.robot_id = robot_id
         self.subs = []
-        for i in range(n_camera):
-            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), self.subs_callback, 1, callback_group=self.group))
         self.camera_pose = []
+        self.camera_available = dict()
+        for i in range(n_camera):
+            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), functools.partial(self.subs_callback,camera_id = i), 1, callback_group=self.group))
+            self.camera_pose.append([])
+            self.camera_available[i] = False
         self.old_pose = None
         self.old_poses_x = []
         self.old_poses_y = []
         self.old_poses_theta = []
     
-    def subs_callback(self, msg):
-        self.camera_pose.append(msg)
+    def subs_callback(self, msg, camera_id):
+        self.camera_pose[camera_id].append(msg)
+        self.camera_available[camera_id] = True
 
     def pub_callback(self):
         pose_holder = Pose2D()
@@ -40,15 +44,24 @@ class CentralNode(Node):
         pose_holder.y = 0.0
         pose_holder.theta = 0.0
         cnt = 0
-        if len(self.camera_pose) > 0:
+        camera_id = -1
+        for i in range(self.n_camera):
+            if self.camera_available[i]:
+                camera_id = i
+                break
+        if camera_id==-1:
+            return
+        for i in range(self.n_camera):
+            self.camera_available[i] = False
+        if len(self.camera_pose[camera_id]) > 0:
             if self.old_pose is None:
-                for pose in self.camera_pose:
+                for pose in self.camera_pose[camera_id]:
                     pose_holder.x += pose.x
                     pose_holder.y += pose.y
                     pose_holder.theta += pose.theta
                     cnt = cnt + 1
             else:
-                for pose in self.camera_pose:
+                for pose in self.camera_pose[camera_id]:
                     if pose_tolerance(pose,self.old_pose):
                         pose_holder.x += pose.x
                         pose_holder.y += pose.y
@@ -76,7 +89,8 @@ class CentralNode(Node):
                 pose_holder.y = mode(self.old_poses_y)
                 pose_holder.theta = mode(self.old_poses_theta)
                 self.publisher.publish(pose_holder)
-            self.camera_pose = []
+            for i in range(self.n_camera):
+                self.camera_pose[i] = []
     
 def main():
     n_camera = int(sys.argv[1])
