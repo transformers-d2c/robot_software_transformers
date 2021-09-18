@@ -71,9 +71,9 @@ class CentralNode(Node):
                 pose_holder.x = pose_holder.x/cnt
                 pose_holder.y = pose_holder.y/cnt
                 pose_holder.theta = pose_holder.theta/cnt
-                pose_holder.x = (pose_holder.x//5)*5
-                pose_holder.y = (pose_holder.y//5)*5
-                pose_holder.theta = (pose_holder.theta//5)*5
+                pose_holder.x = (pose_holder.x//3)*3
+                pose_holder.y = (pose_holder.y//3)*3
+                pose_holder.theta = (pose_holder.theta//3)*3
                 self.old_pose = Pose2D()
                 self.old_pose.x = pose_holder.x
                 self.old_pose.y = pose_holder.y
