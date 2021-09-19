@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose2D
-
+import json
 
 
 
@@ -27,52 +27,21 @@ class PathNode(Node):
         self.pub_r_3 = self.create_publisher(Pose2D, 'r_3/target', 1)
         self.pub_r_4 = self.create_publisher(Pose2D, 'r_4/target', 1)
         self.step = 0
-        self.path = [] 
-        t = Pose2D()
-        t.x = 185.0
-        t.y = 150.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 185.0
-        t.y = 120.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 185.0
-        t.y = 90.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 185.0
-        t.y = 60.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 185.0
-        t.y = 30.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 185.0
-        t.y = 20.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 155.0
-        t.y = 20.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 125.0
-        t.y = 20.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        # t = Pose2D()
-        # t.x = 135.0
-        # t.y = 147.0
-        # t.theta = 180.0
-        # self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        self.path = []
+        with open('path.json','r') as f:
+            data = json.load(f)
+            for four_point in data:
+                path_point = dict()
+                for robot_id in four_point:
+                    t = Pose2D()
+                    t.x = four_point[robot_id]['x']
+                    t.y = four_point[robot_id]['y']
+                    if four_point[robot_id]['flip']:
+                        t.theta = 90
+                    else:
+                        t.theta = 0
+                    path_point[robot_id] = t
+                self.path.append(path_point)             
         t = Pose2D()
         t.x = 12.0
         t.y = 30.0

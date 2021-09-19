@@ -46,6 +46,10 @@ class SocketNode(Node):
 
     def target_callback(self,msg):
         self.target = msg
+        if msg.theta == 90.0:
+            self.flip.data = True
+        else:
+            self.flip.data = False
 
 def main():
     port = 5000
