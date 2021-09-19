@@ -35,17 +35,22 @@ class PathNode(Node):
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 185.0
-        t.y = 115.0
+        t.y = 120.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 185.0
-        t.y = 95.0
+        t.y = 90.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
         t.x = 185.0
-        t.y = 55.0
+        t.y = 60.0
+        t.theta = -90.0
+        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
+        t = Pose2D()
+        t.x = 185.0
+        t.y = 30.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
@@ -54,17 +59,12 @@ class PathNode(Node):
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
-        t.x = 215.0
+        t.x = 155.0
         t.y = 20.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
         t = Pose2D()
-        t.x = 260.0
-        t.y = 20.0
-        t.theta = -90.0
-        self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
-        t = Pose2D()
-        t.x = 300.0
+        t.x = 125.0
         t.y = 20.0
         t.theta = -90.0
         self.path.append({'r_1':t,'r_2':t,'r_3':t,'r_4':t})
