@@ -16,7 +16,7 @@ class SocketNode(Node):
         self.robot_socket = robot_socket
         self.timer = self.create_timer(1/30,self.timer_callback,self.group)
         self.pose_sub = self.create_subscription(Pose2D,'r_'+str(robot_id)+'/pose',self.pose_callback,1,callback_group=self.group)
-        self.target_sub = self.create_subscription(Pose2D,'r_'+str(robot_id)+'/target',self.target_callback,1,callback_group=self.group)
+        self.target_sub = self.create_subscription(Pose2D,'r_'+str(robot_id)+'/final_target',self.target_callback,1,callback_group=self.group)
         self.pose = Pose2D()
         self.target = Pose2D()
         self.flip = Bool()
@@ -46,10 +46,6 @@ class SocketNode(Node):
 
     def target_callback(self,msg):
         self.target = msg
-        if msg.theta == 90.0:
-            self.flip.data = True
-        else:
-            self.flip.data = False
 
 def main():
     port = 5000
