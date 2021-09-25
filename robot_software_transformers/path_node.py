@@ -60,7 +60,7 @@ class PathNode(Node):
         
     def timer_callback(self,num):
         if(num == 1):
-            if self.step[0]<len(self.path[0]):
+            if self.step<len(self.path):
                 self.pub_r_1.publish(self.path[self.step]['r_1'])
                 if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
                     self.step += 1
@@ -72,7 +72,7 @@ class PathNode(Node):
                 temp.data = False
                 self.pub_bool_r_1.publish(temp)
         elif(num == 2):
-            if self.step[1]<len(self.path[1]):
+            if self.step<len(self.path[1]):
                 self.pub_r_2.publish(self.path[self.step]['r_2'])
                 if pose_equal(self.pose['r_2'],self.path[self.step]['r_2']):
                     self.step += 1
