@@ -38,7 +38,7 @@ class PathNode(Node):
             self.pose_sub.append(self.create_subscription(Pose2D, 'r_4/pose', self.r_4_pose_callback, 1))
             self.pub_r_4 = self.create_publisher(Pose2D, 'r_4/target', 1)
             self.pub_bool_r_4 = self.create_publisher(Bool, 'r_4/Bool', 1)
-        self.step = [0,0,0,0]
+        self.step = 0
         self.path = []
         with open('/robot_software_transformers-main/src/robot_software_transformers/robot_software_transformers/path.json','r') as f:
             data = json.load(f)
@@ -63,7 +63,7 @@ class PathNode(Node):
             if self.step[0]<len(self.path[0]):
                 self.pub_r_1.publish(self.path[self.step]['r_1'])
                 if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
-                    self.step[0] += 1
+                    self.step += 1
                 temp = Bool()
                 temp.data = True
                 self.pub_bool_r_1.publish(temp)
@@ -75,7 +75,7 @@ class PathNode(Node):
             if self.step[1]<len(self.path[1]):
                 self.pub_r_2.publish(self.path[self.step]['r_2'])
                 if pose_equal(self.pose['r_2'],self.path[self.step]['r_2']):
-                    self.step[1] += 1
+                    self.step += 1
                 temp = Bool()
                 temp.data = True
                 self.pub_bool_r_1.publish(temp)
@@ -87,7 +87,7 @@ class PathNode(Node):
             if self.step<len(self.path):
                 self.pub_r_3.publish(self.path[self.step]['r_3'])
                 if pose_equal(self.pose['r_3'],self.path[self.step]['r_3']):
-                    self.step[2] += 1
+                    self.step += 1
                 temp = Bool()
                 temp.data = True
                 self.pub_bool_r_1.publish(temp)
@@ -99,7 +99,7 @@ class PathNode(Node):
             if self.step[3]<len(self.path[3]):
                 self.pub_r_4.publish(self.path[self.step]['r_4'])
                 if pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
-                    self.step[3] += 1
+                    self.step += 1
                 temp = Bool()
                 temp.data = True
                 self.pub_bool_r_1.publish(temp)
