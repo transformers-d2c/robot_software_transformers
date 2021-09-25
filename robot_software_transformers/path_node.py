@@ -12,7 +12,7 @@ def pose_equal(p1,p2):
 
 class PathNode(Node):
     def __init__(self,num):
-        super().__init__('path_node')
+        super().__init__('path_node_'+str(num))
         self.group = MutuallyExclusiveCallbackGroup()
         time_period = 1/30
         self.time = self.create_timer(time_period, self.timer_callback(num))
