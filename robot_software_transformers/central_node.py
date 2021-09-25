@@ -68,6 +68,10 @@ class CentralNode(Node):
                         pose_holder.theta += pose.theta # adding theta to old theta
                         cnt = cnt + 1 # number of block crossed + 1
             if cnt>0:
+                """
+                Some bullshitery bhaiya did to implement update rejection which basically rejects any value which might be very large or very small
+                For example all values are 10,9,11,12,10 anfd suddenly there comes a value 100 or -70 or something then this code will reject it
+                """
                 pose_holder.x = pose_holder.x/cnt
                 pose_holder.y = pose_holder.y/cnt
                 pose_holder.theta = pose_holder.theta/cnt
