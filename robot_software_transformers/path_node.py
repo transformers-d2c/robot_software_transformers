@@ -8,17 +8,17 @@ from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 import json
 
 
+
 def pose_equal(p1,p2):
     isEqual = (abs(p1.theta-p2.theta)<5)
     distance = ((p1.x-p2.x)**2 + (p1.y-p2.y)**2)**0.5
     isEqual = isEqual and (distance<15)
-    return isEqual
+    return distance<15
 
 
 class PathNode(Node):
     def __init__(self,num):
-        super().__init__('path_node_'+str(num))
-        self.group = MutuallyExclusiveCallbackGroup()
+        super().__init__('path_node'+str(num))
         time_period = 1/30
         self.time = self.create_timer(time_period, functools.partial(self.timer_callback,num=num))
         self.pose_sub = []
@@ -42,25 +42,30 @@ class PathNode(Node):
         self.path = []
         with open('/robot_software_transformers-main/src/robot_software_transformers/robot_software_transformers/path.json','r') as f:
             data = json.load(f)
-        for four_point in data:
-            path_point = dict()
-            t = Pose2D()
-            t.x = four_point['r_'+str(num)]['x']
-            t.y = four_point['r_'+str(num)]['y']
-            if four_point['r_'+str(num)]['flip']:
-                t.theta = 90.0
-            else:
-                t.theta = 0.0
-            path_point[num] = t
-            self.path.append(path_point) 
-            self.pose = {'r_'+str(num):t}
+            for four_point in data:
+                path_point = dict()
+                for robot_id in four_point:
+                    t = Pose2D()
+                    t.x = four_point[robot_id]['x']
+                    t.y = four_point[robot_id]['y']
+                    if four_point[robot_id]['flip']:
+                        t.theta = 90.0
+                    else:
+                        t.theta = 0.0
+                    path_point[robot_id] = t
+                self.path.append(path_point)             
+        t = Pose2D()
+        t.x = 12.0
+        t.y = 30.0
+        t.theta = 150.0
+        self.pose = {'r_'+str(num):t}
 
 
         #Example path: [{'r_1':Pose2D(0,0,0),'r_2':Pose2D(0,0,0)},{'r_1':Pose2D(0,0,90),'r_2':Pose2D(0,0,0)}] 
         
     def timer_callback(self,num):
         if(num == 1):
-            if self.step<len(self.path):
+            if self.step<len(self.path)-1:
                 self.pub_r_1.publish(self.path[self.step]['r_1'])
                 if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
                     self.step += 1
@@ -72,41 +77,42 @@ class PathNode(Node):
                 temp.data = False
                 self.pub_bool_r_1.publish(temp)
         elif(num == 2):
-            if self.step<len(self.path[1]):
+            if self.step<len(self.path)-1:
                 self.pub_r_2.publish(self.path[self.step]['r_2'])
                 if pose_equal(self.pose['r_2'],self.path[self.step]['r_2']):
                     self.step += 1
                 temp = Bool()
                 temp.data = True
-                self.pub_bool_r_1.publish(temp)
+                self.pub_bool_r_2.publish(temp)
             else:
                 temp = Bool()
                 temp.data = False
-                self.pub_bool_r_1.publish(temp)
+                self.pub_bool_r_2.publish(temp)
         elif(num == 3):
-            if self.step<len(self.path):
+            if self.step<len(self.path)-1:
                 self.pub_r_3.publish(self.path[self.step]['r_3'])
                 if pose_equal(self.pose['r_3'],self.path[self.step]['r_3']):
                     self.step += 1
                 temp = Bool()
                 temp.data = True
-                self.pub_bool_r_1.publish(temp)
+                self.pub_bool_r_3.publish(temp)
             else:
                 temp = Bool()
                 temp.data = False
-                self.pub_bool_r_1.publish(temp)
+                self.pub_bool_r_3.publish(temp)
         elif(num == 4):
-            if self.step[3]<len(self.path[3]):
+            if self.step<len(self.path)-1:
                 self.pub_r_4.publish(self.path[self.step]['r_4'])
                 if pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
                     self.step += 1
                 temp = Bool()
                 temp.data = True
-                self.pub_bool_r_1.publish(temp)
+                self.pub_bool_r_4.publish(temp)
             else:
                 temp = Bool()
                 temp.data = False
-                self.pub_bool_r_1.publish(temp)
+                self.pub_bool_r_4.publish(temp)
+        
 
     def r_1_pose_callback(self, msg):
         self.pose['r_1'] = msg
