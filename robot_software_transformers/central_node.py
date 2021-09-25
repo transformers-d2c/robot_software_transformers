@@ -14,20 +14,20 @@ def pose_tolerance(p1,p2):
     return isEqual
 class CentralNode(Node):
 
-    def __init__(self, n_camera, robot_id):
-        super().__init__('r_'+str(robot_id))
-        self.group = MutuallyExclusiveCallbackGroup()
-        self.publisher = self.create_publisher(Pose2D, 'r_'+str(robot_id)+'/pose', 1)
+    def __init__(self, n_camera, robot_id): # passing the number of cams and robots
+        super().__init__('r_'+str(robot_id)) # making robot nodes like r_1/r_2.....
+        self.group = MutuallyExclusiveCallbackGroup() # preventing race conditions
+        self.publisher = self.create_publisher(Pose2D, 'r_'+str(robot_id)+'/pose', 1) # create pub with topic r_1/pose, r_2/pose...
         time_period = 1/30
-        self.timer = self.create_timer(time_period, self.pub_callback, callback_group=self.group)
+        self.timer = self.create_timer(time_period, self.pub_callback, callback_group=self.group) # create timer to call publisher_callback and callback group will define that the code belongs to the mutually exclusive callgroups
         self.n_camera = n_camera
         self.robot_id = robot_id
         self.subs = []
         self.camera_pose = []
         self.camera_available = dict()
         for i in range(n_camera):
-            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), functools.partial(self.subs_callback,camera_id = i), 1, callback_group=self.group))
-            self.camera_pose.append([])
+            self.subs.append(self.create_subscription(Pose2D, 'c_'+str(i+1)+'/r_'+str(robot_id), functools.partial(self.subs_callback,camera_id = i), 1, callback_group=self.group)) # making robot nodes like r_1/r_2..... and functools.partial passes params
+            self.camera_pose.append([]) # appending empty list to cam_pose list
             self.camera_available[i] = False
         self.old_pose = None
         self.old_poses_x = []
@@ -35,20 +35,20 @@ class CentralNode(Node):
         self.old_poses_theta = []
     
     def subs_callback(self, msg, camera_id):
-        self.camera_pose[camera_id].append(msg)
-        self.camera_available[camera_id] = True
+        self.camera_pose[camera_id].append(msg) # appending msg recieved from the topic in the list
+        self.camera_available[camera_id] = True # and setting bool to true
 
     def pub_callback(self):
         pose_holder = Pose2D()
-        pose_holder.x = 0.0
-        pose_holder.y = 0.0
-        pose_holder.theta = 0.0
-        cnt = 0
-        camera_id = -1
-        for i in range(self.n_camera):
-            if self.camera_available[i]:
+        pose_holder.x = 0.0 # init with 0
+        pose_holder.y = 0.0 # init with 0
+        pose_holder.theta = 0.0 # init with 0
+        cnt = 0 # init with 0
+        camera_id = -1 # init with -1
+        for i in range(self.n_camera): # looping through number of cams
+            if self.camera_available[i]: # check if cam is available
                 camera_id = i
-                break
+                break # temp break
         if camera_id==-1:
             return
         for i in range(self.n_camera):
@@ -93,23 +93,23 @@ class CentralNode(Node):
                 self.camera_pose[i] = []
     
 def main():
-    n_camera = int(sys.argv[1])
-    n_robots = int(sys.argv[2])
+    n_camera = int(sys.argv[1]) # getting the number of cameras
+    n_robots = int(sys.argv[2]) # getting the number of robots
     print(n_camera, n_robots)
-    rclpy.init()
+    rclpy.init() # init the rclpy
     nodes = []
     try:
-        executor = MultiThreadedExecutor(4)
+        executor = MultiThreadedExecutor(4) # init a 4 multithreadedexecutor
         for i in range(n_robots):
-            cnode = CentralNode(n_camera, i+1)
-            nodes.append(cnode)
-            executor.add_node(cnode)
+            cnode = CentralNode(n_camera, i+1) # making object of centralnode
+            nodes.append(cnode) # need to append check finally for the need
+            executor.add_node(cnode) # add the node in the executor object so that when executor does work, all the nodes in executor will spin
         try:
-            executor.spin()
+            executor.spin() # spinning the exec object
         finally:
-            executor.shutdown()
+            executor.shutdown() # shutting down the exec object
             for i in range(n_robots):
-                nodes[i].destroy_node()
+                nodes[i].destroy_node() # destorying the nodes before the final shutdown of rclpy
     finally:
         rclpy.shutdown()
     
