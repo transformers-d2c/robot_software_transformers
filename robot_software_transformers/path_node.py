@@ -3,6 +3,9 @@ from rclpy.node import Node
 from geometry_msgs.msg import Pose2D
 import functools
 from std_msgs.msg import Bool
+from rclpy.executors import MultiThreadedExecutor
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
+import json
 
 
 def pose_equal(p1,p2):
@@ -36,8 +39,8 @@ class PathNode(Node):
             self.pub_r_4 = self.create_publisher(Pose2D, 'r_4/target', 1)
             self.pub_bool_r_4 = self.create_publisher(Bool, 'r_4/Bool', 1)
         self.step = [0,0,0,0]
-        self.path = [][]
-        with open('path.json','r') as f:
+        self.path = []
+        with open('/robot_software_transformers-main/src/robot_software_transformers/robot_software_transformers/path.json','r') as f:
             data = json.load(f)
         for four_point in data:
             path_point = dict()
@@ -45,11 +48,11 @@ class PathNode(Node):
             t.x = four_point['r_'+str(num)]['x']
             t.y = four_point['r_'+str(num)]['y']
             if four_point['r_'+str(num)]['flip']:
-                t.theta = 90
+                t.theta = 90.0
             else:
-                t.theta = 0
+                t.theta = 0.0
             path_point[num] = t
-            self.path[num-1].append(path_point) 
+            self.path.append(path_point) 
             self.pose = {'r_'+str(num):t}
 
 
@@ -81,7 +84,7 @@ class PathNode(Node):
                 temp.data = False
                 self.pub_bool_r_1.publish(temp)
         elif(num == 3):
-            if self.step[2]<len(self.path[2]):
+            if self.step<len(self.path):
                 self.pub_r_3.publish(self.path[self.step]['r_3'])
                 if pose_equal(self.pose['r_3'],self.path[self.step]['r_3']):
                     self.step[2] += 1
