@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose2D
+import functools
 
 
 def pose_equal(p1,p2):
@@ -15,7 +16,7 @@ class PathNode(Node):
         super().__init__('path_node_'+str(num))
         self.group = MutuallyExclusiveCallbackGroup()
         time_period = 1/30
-        self.time = self.create_timer(time_period, self.timer_callback(num))
+        self.time = self.create_timer(time_period, functools.partial(self.timer_callback,num=num))
         self.pose_sub = []
         if(num == 1):
             self.pose_sub.append(self.create_subscription(Pose2D, 'r_1/pose', self.r_1_pose_callback, 1))
