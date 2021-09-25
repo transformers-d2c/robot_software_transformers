@@ -21,7 +21,7 @@ class CameraNode(Node):
             self.pubs.append(self.create_publisher(Pose2D,"c_"+str(self.cameraID) +"/r_"+ str(i+1), 1))
 
 
-        timer_period = 0.03
+        timer_period = 1/30
 
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
