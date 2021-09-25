@@ -49,24 +49,24 @@ class CentralNode(Node):
             if self.camera_available[i]: # check if cam is available
                 camera_id = i
                 break # temp break
-        if camera_id==-1:
+        if camera_id==-1: # if no camera then just return
             return
         for i in range(self.n_camera):
-            self.camera_available[i] = False
-        if len(self.camera_pose[camera_id]) > 0:
-            if self.old_pose is None:
+            self.camera_available[i] = False # reason to make this false? redundant?
+        if len(self.camera_pose[camera_id]) > 0: #if list not empty means cam exists
+            if self.old_pose is None: # if just init meaning no old pose
                 for pose in self.camera_pose[camera_id]:
-                    pose_holder.x += pose.x
-                    pose_holder.y += pose.y
-                    pose_holder.theta += pose.theta
-                    cnt = cnt + 1
+                    pose_holder.x += pose.x # init x coordinate (adding x to 0 basically)
+                    pose_holder.y += pose.y # init y coordinate (adding x to 0 basically)
+                    pose_holder.theta += pose.theta # init theta (adding x to 0 basically)
+                    cnt = cnt + 1 # number of block crossed + 1
             else:
                 for pose in self.camera_pose[camera_id]:
-                    if pose_tolerance(pose,self.old_pose):
-                        pose_holder.x += pose.x
-                        pose_holder.y += pose.y
-                        pose_holder.theta += pose.theta
-                        cnt = cnt + 1
+                    if pose_tolerance(pose,self.old_pose): # check for tolerance (redundant hi hai btw)
+                        pose_holder.x += pose.x # adding x to old x
+                        pose_holder.y += pose.y # adding y to old y
+                        pose_holder.theta += pose.theta # adding theta to old theta
+                        cnt = cnt + 1 # number of block crossed + 1
             if cnt>0:
                 pose_holder.x = pose_holder.x/cnt
                 pose_holder.y = pose_holder.y/cnt
@@ -85,12 +85,12 @@ class CentralNode(Node):
                 self.old_poses_y = self.old_poses_y[max(-1*len(self.old_poses_y),-5):]
                 self.old_poses_theta = self.old_poses_theta[max(-1*len(self.old_poses_theta),-5):]
                 pose_holder = Pose2D()
-                pose_holder.x = mode(self.old_poses_x)
-                pose_holder.y = mode(self.old_poses_y)
-                pose_holder.theta = mode(self.old_poses_theta)
+                pose_holder.x = mode(self.old_poses_x) # taking mode of old x poses and putting in x
+                pose_holder.y = mode(self.old_poses_y) # taking mode of old y poses and putting in y
+                pose_holder.theta = mode(self.old_poses_theta) # taking mode of old thetas and putting in theta
                 self.publisher.publish(pose_holder)
             for i in range(self.n_camera):
-                self.camera_pose[i] = []
+                self.camera_pose[i] = [] # init a 2D list
     
 def main():
     n_camera = int(sys.argv[1]) # getting the number of cameras
