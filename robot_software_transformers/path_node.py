@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose2D
 import functools
+from std_msgs.msg import Bool
 
 
 def pose_equal(p1,p2):
@@ -21,19 +22,19 @@ class PathNode(Node):
         if(num == 1):
             self.pose_sub.append(self.create_subscription(Pose2D, 'r_1/pose', self.r_1_pose_callback, 1))
             self.pub_r_1 = self.create_publisher(Pose2D, 'r_1/target', 1)
-            self.pub_bool_r_1 = self.create_publisher(bool, 'r_1/bool', 1)
+            self.pub_bool_r_1 = self.create_publisher(Bool, 'r_1/Bool', 1)
         elif(num == 2):
             self.pose_sub.append(self.create_subscription(Pose2D, 'r_2/pose', self.r_2_pose_callback, 1))
             self.pub_r_2 = self.create_publisher(Pose2D, 'r_2/target', 1)
-            self.pub_bool_r_2 = self.create_publisher(bool, 'r_2/bool', 1)
+            self.pub_bool_r_2 = self.create_publisher(Bool, 'r_2/Bool', 1)
         elif(num == 3):
             self.pose_sub.append(self.create_subscription(Pose2D, 'r_3/pose', self.r_3_pose_callback, 1))
             self.pub_r_3 = self.create_publisher(Pose2D, 'r_3/target', 1)
-            self.pub_bool_r_3 = self.create_publisher(bool, 'r_3/bool', 1)
+            self.pub_bool_r_3 = self.create_publisher(Bool, 'r_3/Bool', 1)
         elif(num == 4):
             self.pose_sub.append(self.create_subscription(Pose2D, 'r_4/pose', self.r_4_pose_callback, 1))
             self.pub_r_4 = self.create_publisher(Pose2D, 'r_4/target', 1)
-            self.pub_bool_r_4 = self.create_publisher(bool, 'r_4/bool', 1)
+            self.pub_bool_r_4 = self.create_publisher(Bool, 'r_4/Bool', 1)
         self.step = [0,0,0,0]
         self.path = [][]
         with open('path.json','r') as f:
@@ -60,33 +61,49 @@ class PathNode(Node):
                 self.pub_r_1.publish(self.path[self.step]['r_1'])
                 if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
                     self.step[0] += 1
-                self.pub_bool_r_1.publish(True)
+                temp = Bool()
+                temp.data = True
+                self.pub_bool_r_1.publish(temp)
             else:
-                self.pub_bool_r_1.publish(False)
+                temp = Bool()
+                temp.data = False
+                self.pub_bool_r_1.publish(temp)
         elif(num == 2):
             if self.step[1]<len(self.path[1]):
                 self.pub_r_2.publish(self.path[self.step]['r_2'])
                 if pose_equal(self.pose['r_2'],self.path[self.step]['r_2']):
                     self.step[1] += 1
-                self.pub_bool_r_2.publish(True)
+                temp = Bool()
+                temp.data = True
+                self.pub_bool_r_1.publish(temp)
             else:
-                self.pub_bool_r_2.publish(False)
+                temp = Bool()
+                temp.data = False
+                self.pub_bool_r_1.publish(temp)
         elif(num == 3):
             if self.step[2]<len(self.path[2]):
                 self.pub_r_3.publish(self.path[self.step]['r_3'])
                 if pose_equal(self.pose['r_3'],self.path[self.step]['r_3']):
                     self.step[2] += 1
-                self.pub_bool_r_3.publish(True)
+                temp = Bool()
+                temp.data = True
+                self.pub_bool_r_1.publish(temp)
             else:
-                self.pub_bool_r_3.publish(False)
+                temp = Bool()
+                temp.data = False
+                self.pub_bool_r_1.publish(temp)
         elif(num == 4):
             if self.step[3]<len(self.path[3]):
                 self.pub_r_4.publish(self.path[self.step]['r_4'])
                 if pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
                     self.step[3] += 1
-                self.pub_bool_r_4.publish(True)
+                temp = Bool()
+                temp.data = True
+                self.pub_bool_r_1.publish(temp)
             else:
-                self.pub_bool_r_4.publish(False)
+                temp = Bool()
+                temp.data = False
+                self.pub_bool_r_1.publish(temp)
 
     def r_1_pose_callback(self, msg):
         self.pose['r_1'] = msg
