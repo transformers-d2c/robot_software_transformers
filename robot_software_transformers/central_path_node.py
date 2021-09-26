@@ -5,7 +5,7 @@ from std_msgs.msg import Bool
 import functools
 
 class CentralPathNode(Node):
-    def __init__(self,robots):
+    def __init__(self):
         super().__init__('central_path_node') # making node called cpn
         self.time_period = 1/30
         """subscribing to all bool topics and target topics"""
@@ -42,7 +42,19 @@ class CentralPathNode(Node):
         if(msg.data==True):
             """if the bool data is true meaning bot4 is active hence will work or else wont"""
             self.time = self.create_timer(self.time_period, functools.partial(self.timer_callback,content=self.r_4_pose_sub))
-            
+    
+    def r_1_pose_callback(self,msg):
+        self.r_1_pose_sub = msg
+        
+    def r_2_pose_callback(self,msg):
+        self.r_2_pose_sub = msg
+        
+    def r_3_pose_callback(self,msg):
+        self.r_3_pose_sub = msg
+    
+    def r_4_pose_callback(self,msg):
+        self.r_4_pose_sub = msg
+    
     def timer_callback(self, content):
         """This function will simply recieve the Pose2D object as content and then publish it in new topic final_target"""
         self.r_1_pose_final.publish(content)
