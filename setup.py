@@ -13,8 +13,8 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='dev',
-    maintainer_email='dev19034@iiitd.ac.in',
+    maintainer='Dev Rajput, Arpit Nandi',
+    maintainer_email='dev19034@iiitd.ac.in, arpit20179@iiitd.ac.in',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
@@ -24,6 +24,8 @@ setup(
             'camera_node =  robot_software_transformers.camera_node:main',
             'socket_node =  robot_software_transformers.socket_node:main',
             'path_node =  robot_software_transformers.path_node:main',
+            'central_path_node =  robot_software_transformers.central_path_node:main',
+            
         ],
     },
 )
