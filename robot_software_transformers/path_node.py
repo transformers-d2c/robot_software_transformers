@@ -72,49 +72,65 @@ class PathNode(Node):
                 self.pub_r_1.publish(self.path[self.step]['r_1'])
                 if pose_equal(self.pose['r_1'],self.path[self.step]['r_1']):
                     self.step += 1
-                temp = Bool()
-                temp.data = True
-                self.pub_bool_r_1.publish(temp)
+                list_bool[0].data = True
+                self.pub_bool_r_1.publish(list_bool[0])
+                list_bool[1].data = False
+                self.pub_bool_r_2.publish(list_bool[1])
+                list_bool[2].data = False
+                self.pub_bool_r_3.publish(list_bool[2])
+                list_bool[3].data = False
+                self.pub_bool_r_4.publish(list_bool[3])
             else:
-                temp = Bool()
-                temp.data = False
-                self.pub_bool_r_1.publish(temp)
+                list_bool[0].data = False
+                self.pub_bool_r_1.publish(list_bool[0])
         elif(num == 2):
-            if self.step<len(self.path)-1:
+            if self.step<len(self.path)-1 and !list_bool[0].data:
                 self.pub_r_2.publish(self.path[self.step]['r_2'])
                 if pose_equal(self.pose['r_2'],self.path[self.step]['r_2']):
                     self.step += 1
-                temp = Bool()
-                temp.data = True
-                self.pub_bool_r_2.publish(temp)
+                list_bool[1].data = True
+                self.pub_bool_r_2.publish(list_bool[1])
+                list_bool[0].data = False
+                self.pub_bool_r_1.publish(list_bool[0])
+                list_bool[2].data = False
+                self.pub_bool_r_3.publish(list_bool[2])
+                list_bool[3].data = False
+                self.pub_bool_r_4.publish(list_bool[3])
             else:
-                temp = Bool()
-                temp.data = False
-                self.pub_bool_r_2.publish(temp)
+                list_bool[1].data = False
+                self.pub_bool_r_2.publish(list_bool[1])
         elif(num == 3):
             if self.step<len(self.path)-1:
                 self.pub_r_3.publish(self.path[self.step]['r_3'])
                 if pose_equal(self.pose['r_3'],self.path[self.step]['r_3']):
                     self.step += 1
-                temp = Bool()
-                temp.data = True
-                self.pub_bool_r_3.publish(temp)
+                list_bool[2].data = True
+                self.pub_bool_r_3.publish(list_bool[2])
+                list_bool[0].data = False
+                self.pub_bool_r_1.publish(list_bool[0])
+                list_bool[1].data = False
+                self.pub_bool_r_2.publish(list_bool[1])
+                list_bool[3].data = False
+                self.pub_bool_r_4.publish(list_bool[3])
             else:
-                temp = Bool()
-                temp.data = False
-                self.pub_bool_r_3.publish(temp)
+                list_bool[2].data = False
+                self.pub_bool_r_3.publish(list_bool[2])
         elif(num == 4):
             if self.step<len(self.path)-1:
                 self.pub_r_4.publish(self.path[self.step]['r_4'])
                 if pose_equal(self.pose['r_4'],self.path[self.step]['r_4']):
                     self.step += 1
-                temp = Bool()
-                temp.data = True
-                self.pub_bool_r_4.publish(temp)
+                list_bool[3].data = True
+                self.pub_bool_r_4.publish(list_bool[3])
+                list_bool[0].data = False
+                self.pub_bool_r_1.publish(list_bool[0])
+                list_bool[2].data = False
+                self.pub_bool_r_3.publish(list_bool[2])
+                list_bool[1].data = False
+                self.pub_bool_r_2.publish(list_bool[1])
             else:
-                temp = Bool()
-                temp.data = False
-                self.pub_bool_r_4.publish(temp)
+                list_bool[3].data = False
+                self.pub_bool_r_4.publish(list_bool[3])
         
 
     def r_1_pose_callback(self, msg):
