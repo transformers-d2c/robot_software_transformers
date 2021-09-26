@@ -1,2 +1,2 @@
 FROM ros2:final
-COPY ./robot_software_transformers /robot_software_transformers-main/src/robot_software_transformers/robot_software_transformers
+COPY . /robot_software_transformers-main/src/robot_software_transformers
