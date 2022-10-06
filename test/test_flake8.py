@@ -13,11 +13,11 @@
 # limitations under the License.
 
 from ament_flake8.main import main_with_errors
-import pytest
+import pytest as pt
 
 
-@pytest.mark.flake8
-@pytest.mark.linter
+@pt.mark.flake8
+@pt.mark.linter
 def test_flake8():
     rc, errors = main_with_errors(argv=[])
     assert rc == 0, \
