@@ -26,7 +26,6 @@ class Camera:
         self.video = self.VideoGet(cam_url)
 
     def get_frame(self):
-        """ If new thread is started then wait until frame is available and then return it. """
         if self.video.stopped:
             print('Cannot read frame')
         else:
