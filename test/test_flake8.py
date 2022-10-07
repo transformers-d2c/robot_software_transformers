@@ -15,7 +15,6 @@
 from ament_flake8.main import main_with_errors
 import pytest as pt
 
-
 @pt.mark.flake8
 @pt.mark.linter
 def test_flake8():
