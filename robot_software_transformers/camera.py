@@ -290,10 +290,6 @@ class Camera:
 
 
     class VideoGet:
-        """
-        Creates a separate thread for reading video frames.
-        Read self.frame to get the video frame
-        """
 
         def __init__(self,src = 0):
             self.grabbed = False
