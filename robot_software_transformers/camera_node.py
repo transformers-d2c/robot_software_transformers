@@ -40,7 +40,6 @@ class CameraNode(Node):
         
 def main():
     # will have to initialize the camera library ?
-    # Initialize the rclpy library
     print(sys.argv)
     rclpy.init()
     camera_node = CameraNode(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
