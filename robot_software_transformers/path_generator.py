@@ -41,7 +41,7 @@ def give_between_points(p1,p2,increment):
     return path
 
 
-if __name__=='__main__':
+def main():
     cont = 'y'
     full_path = []
     while cont=='y':
@@ -71,6 +71,10 @@ if __name__=='__main__':
     
     with open('path.json','w') as f:
         json.dump(full_path,f)
+
+
+if __name__=='__main__':
+    main()
 
 
         
